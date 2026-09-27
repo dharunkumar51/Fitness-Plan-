@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        FitBuddy | Admin Dashboard
+    </title>
+
+    <style>
+
+        * {
+            box-sizing:
+                border-box;
+        }
+
+        body {
+
+            margin:
+                0;
+
+            background:
+                #0c1015;
+
+            color:
+                #f3f6f8;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+        }
+
+        .wrapper {
+
+            width:
+                min(
+                    1200px,
+                    94%
+                );
+
+            margin:
+                auto;
+
+            padding:
+                30px 0 60px;
+        }
+
+        h1 span {
+
+            color:
+                #69e36d;
+        }
+
+        a {
+
+            color:
+                #9ff3a3;
+
+            text-decoration:
+                none;
+        }
+
+        .card {
+
+            background:
+                #151b22;
+
+            border:
+                1px solid
+                #2c3540;
+
+            border-radius:
+                18px;
+
+            padding:
+                22px;
+
+            margin:
+                18px 0;
+        }
+
+        .error {
+
+            background:
+                #4c1f25;
+
+            border:
+                1px solid
+                #8e3b46;
+
+            padding:
+                13px;
+
+            border-radius:
+                10px;
+        }
+
+        input {
+
+            width:
+                100%;
+
+            padding:
+                13px;
+
+            background:
+                #0b1015;
+
+            border:
+                1px solid
+                #39434e;
+
+            color:
+                white;
+
+            border-radius:
+                10px;
+
+            margin:
+                10px 0;
+        }
+
+        button {
+
+            padding:
+                11px 17px;
+
+            border:
+                0;
+
+            border-radius:
+                9px;
+
+            background:
+                #69e36d;
+
+            color:
+                #071008;
+
+            font-weight:
+                800;
+
+            cursor:
+                pointer;
+        }
+
+        .user {
+
+            background:
+                #0e1319;
+
+            border:
+                1px solid
+                #2a333d;
+
+            border-radius:
+                14px;
+
+            padding:
+                20px;
+
+            margin:
+                20px 0;
+        }
+
+        .meta {
+
+            display:
+                grid;
+
+            grid-template-columns:
+                repeat(
+                    5,
+                    1fr
+                );
+
+            gap:
+                10px;
+        }
+
+        .meta-item {
+
+            background:
+                #151c23;
+
+            padding:
+                12px;
+
+            border-radius:
+                8px;
+        }
+
+        .small {
+
+            color:
+                #9aa6b2;
+
+            font-size:
+                12px;
+        }
+
+        .plan {
+
+            white-space:
+                pre-wrap;
+
+            background:
+                #080c10;
+
+            padding:
+                16px;
+
+            border-radius:
+                10px;
+
+            line-height:
+                1.5;
+
+            max-height:
+                450px;
+
+            overflow:
+                auto;
+        }
+
+        .delete {
+
+            background:
+                #c94a4a;
+
+            color:
+                white;
+
+            margin-top:
+                12px;
+        }
+
+        @media(max-width: 850px) {
+
+            .meta {
+
+                grid-template-columns:
+                    1fr 1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="wrapper">
+
+
+    <h1>
+
+        Fit<span>Buddy</span>
+        Admin Dashboard
+
+    </h1>
+
+
+    <p>
+
+        <a href="/">
+            ← Back to FitBuddy
+        </a>
+
+    </p>
+
+
+    {% if not authorized %}
+
+
+    <div class="card">
+
+        <h2>
+            Admin Login
+        </h2>
+
+        <p>
+            Enter your ADMIN_TOKEN.
+        </p>
+
+
+        {% if error %}
+
+        <div class="error">
+
+            {{ error }}
+
+        </div>
+
+        {% endif %}
+
+
+        <form
+            method="get"
+            action="/view-all-users"
+        >
+
+            <input
+                type="password"
+                name="token"
+                placeholder="Admin token"
+                required
+            >
+
+            <button type="submit">
+
+                Open Dashboard
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% else %}
+
+
+    <div class="card">
+
+        <strong>
+
+            Registered users:
+            {{ users_with_plans|length }}
+
+        </strong>
+
+    </div>
+
+
+    {% for user, plan in users_with_plans %}
+
+
+    <article class="user">
+
+        <h2>
+            {{ user.username }}
+        </h2>
+
+
+        <div class="meta">
+
+
+            <div class="meta-item">
+
+                <span class="small">
+                    User ID
+                </span>
+
+                <br>
+
+                {{ user.user_id }}
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="small">
+                    Age
+                </span>
+
+                <br>
+
+                {{ user.age }}
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="small">
+                    Weight
+                </span>
+
+                <br>
+
+                {{ user.weight }} kg
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="small">
+                    Goal
+                </span>
+
+                <br>
+
+                {{ user.goal }}
+
+            </div>
+
+
+            <div class="meta-item">
+
+                <span class="small">
+                    Intensity
+                </span>
+
+                <br>
+
+                {{ user.intensity }}
+
+            </div>
+
+
+        </div>
+
+
+        {% if plan %}
+
+
+        <h3>
+            Original Plan
+        </h3>
+
+        <div class="plan">
+
+            {{ plan.original_plan }}
+
+        </div>
+
+
+        {% if plan.updated_plan %}
+
+
+        <h3>
+            Updated Plan
+        </h3>
+
+        <div class="plan">
+
+            {{ plan.updated_plan }}
+
+        </div>
+
+
+        <h3>
+            User Feedback
+        </h3>
+
+        <p>
+
+            {{ plan.feedback }}
+
+        </p>
+
+
+        {% endif %}
+
+
+        <h3>
+            Nutrition Tip
+        </h3>
+
+        <p>
+
+            {{ plan.nutrition_tip }}
+
+        </p>
+
+
+        {% else %}
+
+
+        <p>
+            No plan stored for this user.
+        </p>
+
+
+        {% endif %}
+
+
+        <form
+            method="post"
+            action="/admin/delete"
+            onsubmit="
+                return confirm(
+                    'Delete this user and all plans?'
+                );
+            "
+        >
+
+            <input
+                type="hidden"
+                name="token"
+                value="{{ token }}"
+            >
+
+            <input
+                type="hidden"
+                name="user_id"
+                value="{{ user.user_id }}"
+            >
+
+
+            <button
+                type="submit"
+                class="delete"
+            >
+
+                Delete User
+
+            </button>
+
+        </form>
+
+
+    </article>
+
+
+    {% else %}
+
+
+    <div class="card">
+
+        <p>
+            No users have been registered yet.
+        </p>
+
+    </div>
+
+
+    {% endfor %}
+
+
+    {% endif %}
+
+
+</div>
+
+</body>
+
+</html>
